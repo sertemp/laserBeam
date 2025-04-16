@@ -15,72 +15,73 @@
     "commands": [
       {
         "command": "laserbeam.fire",
-        "title": "Teleport to location"
+        "title": "LB: Fire target"
       },
       {
         "command": "laserbeam.lockIn_1",
-        "title": "Lock in the position 1"
+        "title": "LB: Lock postion 1"
       },
       {
         "command": "laserbeam.lockIn_2",
-        "title": "Lock in the position 2"
+        "title": "LB: Lock postion 2"
       },
       {
         "command": "laserbeam.lockIn_3",
-        "title": "Lock in the position 3"
+        "title": "LB: Lock postion 3"
       },
       {
         "command": "laserbeam.lockIn_4",
-        "title": "Lock in the position 4"
-      },
-      {
-        "command": "laserbeam.fire",
-        "title": "Test for theses nuts"
+        "title": "LB: Lock postion 4"
       }
     ],
       "keybindings": [
       {
-        "key": "ctrl+alt+j",
+        "key": "ctrl+alt+h",
         "command": "laserbeam.fire",
         "args": 1,
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+k",
+        "key": "ctrl+alt+j",
         "command": "laserbeam.fire",
         "args": 2,
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+l",
+        "key": "ctrl+alt+k",
         "command": "laserbeam.fire",
         "args": 3,
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+;",
+        "key": "ctrl+alt+l",
         "command": "laserbeam.fire",
         "args": 4,
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+u",
+        "key": "ctrl+alt+y",
         "command": "laserbeam.lockIn_1",
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+i",
+        "key": "ctrl+alt+u",
         "command": "laserbeam.lockIn_2",
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+o",
+        "key": "ctrl+alt+i",
         "command": "laserbeam.lockIn_3",
         "when": "editorTextFocus" 
       },
       {
-        "key": "ctrl+alt+p",
+        "key": "ctrl+alt+o",
         "command": "laserbeam.lockIn_4",
+        "when": "editorTextFocus" 
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "laserbeam.fire",
         "when": "editorTextFocus" 
       }
     ]

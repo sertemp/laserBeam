@@ -12,6 +12,8 @@ interface TargetLocation {
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+let myStatusBarItem: vscode.StatusBarItem;
+
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
@@ -20,7 +22,13 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
+    const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBar.text = "$(rocket) LaserBeam Ready"; // use icon + text
+    statusBar.tooltip = "Click to scan targets";
+    statusBar.command = "laserbeam.scan"; // runs your command on click
+    statusBar.show();
 
+    context.subscriptions.push(statusBar); // clean up on deactivate
 
     const lockIn_1 = vscode.commands.registerCommand('laserbeam.lockIn_1', async () => {
         const currentFile = vscode.window.activeTextEditor;
@@ -33,7 +41,8 @@ export function activate(context: vscode.ExtensionContext) {
         };
 
         await context.workspaceState.update('laserbeam.target_1', targetLocation);
-        vscode.window.showInformationMessage('Locked in the position for buffer 1');
+        statusBar.text = "LB: Locked 1";
+        //vscode.window.showInformationMessage('Locked in the position for buffer 1');
     });
 
     const lockIn2 = vscode.commands.registerCommand('laserbeam.lockIn_2', async () => {
@@ -48,7 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
 
         await context.workspaceState.update('laserbeam.target_2', targetLocation);
 
-        vscode.window.showInformationMessage('Locked in the position for buffer 2');
+        statusBar.text = "LB: Locked 2";
+        //vscode.window.showInformationMessage('Locked in the position for buffer 2');
     });
 
     const lockIn3 = vscode.commands.registerCommand('laserbeam.lockIn_3', async () => {
@@ -62,7 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
         };
 
         await context.workspaceState.update('laserbeam.target_3', targetLocation);
-        vscode.window.showInformationMessage('Locked in the position for buffer 3');
+        statusBar.text = "LB: Locked 3";
+        //vscode.window.showInformationMessage('Locked in the position for buffer 3');
     });
 
     const lockIn4 = vscode.commands.registerCommand('laserbeam.lockIn_4', async () => {
@@ -76,12 +87,14 @@ export function activate(context: vscode.ExtensionContext) {
         };
 
         await context.workspaceState.update('laserbeam.target_4', targetLocation);
-        vscode.window.showInformationMessage('Locked in the position for buffer 4');
+
+        statusBar.text = "LB: Locked 4";
+        //vscode.window.showInformationMessage('Locked in the position for buffer 4');
     });
 
     const fire = vscode.commands.registerCommand('laserbeam.fire', async (buffer) => {
         let selectedBuffer = "";
-
+        
         // Get the value of the buffer
         if (buffer !== undefined ) {
             switch (buffer) {
@@ -102,32 +115,38 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
         else {
-            const items: vscode.QuickPickItem[] = [
-                {
-                    label: '1',
-                    description: 'laserbeam.target_1',
-                },
-                {
-                    label: '2',
-                    description: 'laserbeam.target_2'
-                },
-                {
-                    label: '3',
-                    description: 'laserbeam.target_3'
-                },
-                {
-                    label: '4',
-                    description: 'laserbeam.target_4'
-                },
-            ];
+            let targets: TargetLocation[] = [];
+            let quickPickItems: vscode.QuickPickItem[] = [];
+
+            for (let i = 1; i <= 4; i++) {
+                let qci: vscode.QuickPickItem;
+                const savedValue = context.workspaceState.get<TargetLocation>('laserbeam.target_' + i);
+                if (savedValue === undefined){
+                    return 0;
+                }
+                if (savedValue.file === undefined){
+                    qci = {
+                        label: String(i),
+                        description: 'laserbeam.target_' + i,
+                    };
+                } else {
+                    qci = {
+                        label: String(i),
+                        description: 'laserbeam.target_' + i,
+                        detail: savedValue.file
+                    };
+                }
+                quickPickItems.push(qci);
+                targets.push(savedValue);   
+            } 
 
             const options: vscode.QuickPickOptions = {
                 placeHolder: 'Select a target',
                 canPickMany: false
             };
 
-            const selectedItem = await vscode.window.showQuickPick(items, options);
-            vscode.window.showInformationMessage(String(selectedItem));
+            const selectedItem = await vscode.window.showQuickPick(quickPickItems, options);
+            //vscode.window.showInformationMessage(String(selectedItem));
             if (selectedItem?.description === undefined) {
                 return 0;
             }
@@ -163,7 +182,8 @@ export function activate(context: vscode.ExtensionContext) {
                 preview: false,
             });
 
-            vscode.window.showInformationMessage(`fired to ${path.basename(String(fileUri))}`);
+            statusBar.text = "LB: Fire";
+            //vscode.window.showInformationMessage(`fired to ${path.basename(String(fileUri))}`);
         
         } catch (error) {
             console.error("Error opening file:", error);
